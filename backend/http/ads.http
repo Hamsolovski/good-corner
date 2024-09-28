@@ -1,0 +1,19 @@
+GET http://localhost:3000/ads
+
+###
+POST http://localhost:3000/ads
+Content-Type: application/json
+
+{
+    "title": "Bike to sell",
+    "description": "My bike is green, it's very nice",
+    "owner": "dealerdebike@gmail.com",
+    "price": 10203,
+    "picture": "",
+    "location": "Paris",
+    "createdAt": "2023-10-05T10:14:15.922Z"
+}
+
+###
+
+DELETE http://localhost:3000/ad/2
