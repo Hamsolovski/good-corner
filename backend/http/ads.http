@@ -1,6 +1,6 @@
 GET http://localhost:3000/ads
 ###
-GET http://localhost:3000/ad/84
+GET http://localhost:3000/ad/16
 ###
 POST http://localhost:3000/ads
 Content-Type: application/json
@@ -9,7 +9,7 @@ Content-Type: application/json
     "title": "Bike to sell",
     "description": "My bike is green, it's very nice",
     "owner": "dealerdebike@gmail.com",
-    "price": 10203,
+    "price": 100,
     "picture": "",
     "location": "Paris",
     "createdAt": "2023-10-05T10:14:15.922Z"
@@ -17,16 +17,16 @@ Content-Type: application/json
 
 ###
 
-DELETE http://localhost:3000/ad/83
+DELETE http://localhost:3000/ad/13
 
 ###
 
-PUT http://localhost:3000/ad/85
+PUT http://localhost:3000/ad/12
 Content-Type: application/json
 
 {
     "title": "Updated Bike",
-    "description": "My bike is green, it's very nice",
+    "description": "My bike has neon wheels, it's incredibly nice",
     "owner": "dealerdebike@gmail.com",
     "price": 10203,
     "picture": "",

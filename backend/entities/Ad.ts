@@ -22,7 +22,7 @@ export class Ad extends BaseEntity {
 
     @Column()
     location!: string;
-    
+
     @Column()
-    createdAt!: Date;
+    createdAt!: string;
 }

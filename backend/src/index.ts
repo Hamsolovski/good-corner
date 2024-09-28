@@ -1,8 +1,6 @@
 import express from "express";
-import {Request, Response, NextFunction} from 'express';
 import "reflect-metadata";
 import { dataSource } from "./config/db";
-import sqlite3 from 'sqlite3';
 import { Ad } from "../entities/Ad";
 
 // APP INITIALISATION
@@ -10,60 +8,90 @@ const app = express();
 const port = 3000;
 app.use(express.json());
 
-// DB INITIALISATION
-const db = new sqlite3.Database('./database/db.sqlite')
 
 
-
-app.get('/', (req: Request, res: Response) => {
+app.get('/', (req, res) => {
     res.send('Hello World');
 })
 
-app.get('/ads', (req, res) => {
-    db.all("SELECT * FROM ad", (err, rows) => {
-        if (err) return res.status(500).send(err)
-        else return res.send(rows);
-    })
+app.get('/ads', async (req, res) => {
+    try {
+        const ads = await Ad.find()
+        if (ads.length === 0) res.status(404).send('No ad found')
+        else res.json(ads)
+    } catch (error) {
+        res.sendStatus(500).send(error)
+    }
+
 })
 
-app.get('/ad/:id', (req, res) => {
-    db.all("SELECT * FROM ad WHERE id = ?", req.params.id, (err, rows) => {
-        if (err) return res.status(500).send(err)
-        else if (rows.length === 0) return res.sendStatus(404);
-        else return res.send(rows)
-    })
-
+app.get('/ad/:id', async (req, res) => {
+    try {
+        const id = Number(req.params.id)
+        const [ad] = await Ad.find({
+            where: {
+                id: id
+            }
+        })
+        if (!ad) res.status(404).send('No ad found')
+        else res.json(ad)
+    } catch (error) {
+        res.sendStatus(500).send(error)
+    }
 })
 
 app.post('/ads', (req, res) => {
-    const {title, description, owner, price, picture, location, createdAt} = req.body;
-
-
-    db.run("INSERT INTO ad (title, description, owner, price, picture, location, createdAt) VALUES (?, ?, ?, ?, ?, ?, ?)",
-        [title, description, owner, price, picture, location, createdAt], (err) => {
-            if (err) return res.status(500).send(err)
-            else return res.sendStatus(200)
-        }
-    )
+    try {
+        const {title, description, owner, price, picture, location, createdAt} = req.body;
+        const ad = new Ad();
+        ad.title = title;
+        ad.description = description;
+        ad.owner = owner;
+        ad.price = price;
+        ad.picture = picture;
+        ad.location = location;
+        ad.createdAt = createdAt;
+        ad.save()
+        res.status(200).send('Ad created !')
+    } catch (error) {
+        res.status(500).send(error)
+    }
 })
 
-app.delete('/ad/:id', (req, res) => {
-    let id = Number(req.params.id)
-    db.run("DELETE FROM ad WHERE id = ?", id, (err) => {
-        if (err) return res.status(500).send(err)
-        else return res.sendStatus(204)
-    })
+app.delete('/ad/:id', async (req, res) => {
+    try {
+        let id = Number(req.params.id)
+        const ad = await Ad.findOneBy({ id })
+        if (!ad) res.status(404).send('No ad found')
+        else {
+            ad.remove()
+            res.status(204).send('Ad deleted !')
+        }
+    } catch (error) {
+        res.status(500).send(error)
+    }
 })
 
-app.put('/ad/:id', (req, res) => {
-    let id = Number(req.params.id)
-    const {title, description, owner, price, picture, location, createdAt} = req.body;
-    db.run("UPDATE ad SET title = ?, description = ?, owner = ?, price = ?, picture = ?, location = ?, createdAt = ? WHERE id = ?", 
-        [title, description, owner, price, picture, location, createdAt, id], (err) => {
-            if (err) return res.status(500).send(err)
-            else return res.send(200)
+app.put('/ad/:id', async (req, res) => {
+    try {
+        const id = Number(req.params.id)
+        const {title, description, owner, price, picture, location, createdAt} = req.body;
+        const ad = await Ad.findOneBy({ id })
+        if (!ad) res!.sendStatus(404)
+        else {
+            ad!.title = title;
+            ad!.description = description;
+            ad!.owner = owner;
+            ad!.price = price;
+            ad!.createdAt = createdAt;
+            ad!.picture = picture;
+            ad!.location = location;
+            ad!.save();
+            res.sendStatus(200)
         }
-    )
+    } catch (error) {
+        res.status(500).send(error)
+    }
 })
 
 
