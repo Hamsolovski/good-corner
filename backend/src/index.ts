@@ -1,6 +1,9 @@
 import express from "express";
 import {Request, Response, NextFunction} from 'express';
+import "reflect-metadata";
+import { dataSource } from "./config/db";
 import sqlite3 from 'sqlite3';
+import { Ad } from "../entities/Ad";
 
 // APP INITIALISATION
 const app = express();
@@ -34,6 +37,8 @@ app.get('/ad/:id', (req, res) => {
 
 app.post('/ads', (req, res) => {
     const {title, description, owner, price, picture, location, createdAt} = req.body;
+
+
     db.run("INSERT INTO ad (title, description, owner, price, picture, location, createdAt) VALUES (?, ?, ?, ?, ?, ?, ?)",
         [title, description, owner, price, picture, location, createdAt], (err) => {
             if (err) return res.status(500).send(err)
@@ -67,6 +72,7 @@ app.put('/ad/:id', (req, res) => {
 
 
 
-app.listen(port, () => {
+app.listen(port, async () => {
+    await dataSource.initialize();
     console.log(`The Good Corner listening on port ${port}`)
 })
