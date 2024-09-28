@@ -1,6 +1,6 @@
 GET http://localhost:3000/ads
 ###
-GET http://localhost:3000/ad/81
+GET http://localhost:3000/ad/84
 ###
 POST http://localhost:3000/ads
 Content-Type: application/json
@@ -17,11 +17,11 @@ Content-Type: application/json
 
 ###
 
-DELETE http://localhost:3000/ad/82
+DELETE http://localhost:3000/ad/83
 
 ###
 
-PUT http://localhost:3000/ad/81
+PUT http://localhost:3000/ad/85
 Content-Type: application/json
 
 {

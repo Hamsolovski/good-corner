@@ -18,13 +18,16 @@ app.get('/', (req: Request, res: Response) => {
 
 app.get('/ads', (req, res) => {
     db.all("SELECT * FROM ad", (err, rows) => {
-        res.send(rows);
+        if (err) return res.status(500).send(err)
+        else return res.send(rows);
     })
 })
 
 app.get('/ad/:id', (req, res) => {
     db.all("SELECT * FROM ad WHERE id = ?", req.params.id, (err, rows) => {
-        res.send(rows)
+        if (err) return res.status(500).send(err)
+        else if (rows.length === 0) return res.sendStatus(404);
+        else return res.send(rows)
     })
 
 })
@@ -33,7 +36,8 @@ app.post('/ads', (req, res) => {
     const {title, description, owner, price, picture, location, createdAt} = req.body;
     db.run("INSERT INTO ad (title, description, owner, price, picture, location, createdAt) VALUES (?, ?, ?, ?, ?, ?, ?)",
         [title, description, owner, price, picture, location, createdAt], (err) => {
-            res.send('Resource created')
+            if (err) return res.status(500).send(err)
+            else return res.sendStatus(200)
         }
     )
 })
@@ -41,7 +45,8 @@ app.post('/ads', (req, res) => {
 app.delete('/ad/:id', (req, res) => {
     let id = Number(req.params.id)
     db.run("DELETE FROM ad WHERE id = ?", id, (err) => {
-        res.send('Resource deleted')
+        if (err) return res.status(500).send(err)
+        else return res.sendStatus(204)
     })
 })
 
@@ -50,7 +55,8 @@ app.put('/ad/:id', (req, res) => {
     const {title, description, owner, price, picture, location, createdAt} = req.body;
     db.run("UPDATE ad SET title = ?, description = ?, owner = ?, price = ?, picture = ?, location = ?, createdAt = ? WHERE id = ?", 
         [title, description, owner, price, picture, location, createdAt, id], (err) => {
-            res.send('Resource updated')
+            if (err) return res.status(500).send(err)
+            else return res.send(200)
         }
     )
 })
