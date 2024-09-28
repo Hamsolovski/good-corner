@@ -1,57 +1,65 @@
 import express from "express";
 import {Request, Response, NextFunction} from 'express';
+import sqlite3 from 'sqlite3';
 
+// APP INITIALISATION
 const app = express();
 const port = 3000;
 app.use(express.json());
 
-let ads = [
-    {
-      id: 1,
-      title: "Bike to sell",
-      description:
-        "My bike is blue, working fine. I'm selling it because I've got a new one",
-      owner: "bike.seller@gmail.com",
-      price: 100,
-      picture:
-        "https://images.lecho.be/view?iid=dc:113129565&context=ONLINE&ratio=16/9&width=640&u=1508242455000",
-      location: "Paris",
-      createdAt: "2023-09-05T10:13:14.755Z",
-    },
-    {
-      id: 2,
-      title: "Car to sell",
-      description:
-        "My car is blue, working fine. I'm selling it because I've got a new one",
-      owner: "car.seller@gmail.com",
-      price: 10000,
-      picture:
-        "https://www.automobile-magazine.fr/asset/cms/34973/config/28294/apres-plusieurs-prototypes-la-bollore-bluecar-a-fini-par-devoiler-sa-version-definitive.jpg",
-      location: "Paris",
-      createdAt: "2023-10-05T10:14:15.922Z",
-    },
-  ];
+// DB INITIALISATION
+const db = new sqlite3.Database('./database/db.sqlite')
+
+
 
 app.get('/', (req: Request, res: Response) => {
     res.send('Hello World');
 })
 
 app.get('/ads', (req, res) => {
-    res.send(ads);
+    db.all("SELECT * FROM ad", (err, rows) => {
+        res.send(rows);
+    })
+})
+
+app.get('/ad/:id', (req, res) => {
+    db.all("SELECT * FROM ad WHERE id = ?", req.params.id, (err, rows) => {
+        res.send(rows)
+    })
+
 })
 
 app.post('/ads', (req, res) => {
-    ads.push(req.body);
-    res.send('Request received')
+    const {title, description, owner, price, picture, location, createdAt} = req.body;
+    db.run("INSERT INTO ad (title, description, owner, price, picture, location, createdAt) VALUES (?, ?, ?, ?, ?, ?, ?)",
+        [title, description, owner, price, picture, location, createdAt], (err) => {
+            res.send('Resource created')
+        }
+    )
 })
 
-// app.delete('ad/:id', (req, res) => {
-//     let id = Number(req.params.id)
-// })
+app.delete('/ad/:id', (req, res) => {
+    let id = Number(req.params.id)
+    db.run("DELETE FROM ad WHERE id = ?", id, (err) => {
+        res.send('Resource deleted')
+    })
+})
 
-// app.put('ad/:id', (req, res) => {
-//     let id = Number(req.params.id)
-// })
+app.put('/ad/:id', (req, res) => {
+    let id = Number(req.params.id)
+    const {title, description, owner, price, picture, location, createdAt} = req.body;
+    db.run("UPDATE ad SET title = ?, description = ?, owner = ?, price = ?, picture = ?, location = ?, createdAt = ? WHERE id = ?", 
+        [title, description, owner, price, picture, location, createdAt, id], (err) => {
+            res.send('Resource updated')
+        }
+    )
+})
+
+
+
+    
+
+
 
 app.listen(port, () => {
     console.log(`The Good Corner listening on port ${port}`)
