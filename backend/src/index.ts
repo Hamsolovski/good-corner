@@ -2,6 +2,7 @@ import express from "express";
 import "reflect-metadata";
 import { dataSource } from "./config/db";
 import { Ad } from "../entities/Ad";
+import { Category } from "../entities/Category";
 
 // APP INITIALISATION
 const app = express();
@@ -23,6 +24,16 @@ app.get('/ads', async (req, res) => {
         res.sendStatus(500).send(error)
     }
 
+})
+
+app.get('/categories', async(req, res) => {
+    try {
+        const categories = await Category.find()
+        if (categories.length === 0) res.status(404).send('No category found')
+        else res.json(categories)
+    } catch (error) {
+        
+    }
 })
 
 app.get('/ad/:id', async (req, res) => {
@@ -93,11 +104,6 @@ app.put('/ad/:id', async (req, res) => {
         res.status(500).send(error)
     }
 })
-
-
-
-    
-
 
 
 app.listen(port, async () => {

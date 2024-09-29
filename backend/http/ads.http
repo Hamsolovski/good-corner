@@ -1,5 +1,7 @@
 GET http://localhost:3000/ads
 ###
+GET http://localhost:3000/categories
+###
 GET http://localhost:3000/ad/16
 ###
 POST http://localhost:3000/ads
@@ -12,7 +14,8 @@ Content-Type: application/json
     "price": 100,
     "picture": "",
     "location": "Paris",
-    "createdAt": "2023-10-05T10:14:15.922Z"
+    "createdAt": "2023-10-05T10:14:15.922Z",
+    "category": "Bike"
 }
 
 ###
@@ -31,7 +34,8 @@ Content-Type: application/json
     "price": 10203,
     "picture": "",
     "location": "Paris",
-    "createdAt": "2023-10-05T10:14:15.922Z"
+    "createdAt": "2023-10-05T10:14:15.922Z",
+    "category": "Bike"
 }
 
 ###

@@ -1,4 +1,5 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Category } from "./Category";
 
 @Entity()
 export class Ad extends BaseEntity {
@@ -25,4 +26,7 @@ export class Ad extends BaseEntity {
 
     @Column()
     createdAt!: string;
+
+    @ManyToOne(() => Category, category => category.ads)
+    category!: Category;
 }
