@@ -17,7 +17,11 @@ app.get('/', (req, res) => {
 
 app.get('/ads', async (req, res) => {
     try {
-        const ads = await Ad.find()
+        const ads = await Ad.find({
+            relations: {
+                category: true,
+            }
+        })
         if (ads.length === 0) res.status(404).send('No ad found')
         else res.json(ads)
     } catch (error) {
@@ -28,7 +32,11 @@ app.get('/ads', async (req, res) => {
 
 app.get('/categories', async(req, res) => {
     try {
-        const categories = await Category.find()
+        const categories = await Category.find({
+            relations: {
+                ads: true,
+            }
+        })
         if (categories.length === 0) res.status(404).send('No category found')
         else res.json(categories)
     } catch (error) {
@@ -40,6 +48,9 @@ app.get('/ad/:id', async (req, res) => {
     try {
         const id = Number(req.params.id)
         const [ad] = await Ad.find({
+            relations: {
+                category: true,
+            },
             where: {
                 id: id
             }
@@ -51,9 +62,9 @@ app.get('/ad/:id', async (req, res) => {
     }
 })
 
-app.post('/ads', (req, res) => {
+app.post('/ads', async (req, res) => {
     try {
-        const {title, description, owner, price, picture, location, createdAt} = req.body;
+        const {title, description, owner, price, picture, location, createdAt, categoryId} = req.body;
         const ad = new Ad();
         ad.title = title;
         ad.description = description;
@@ -62,6 +73,8 @@ app.post('/ads', (req, res) => {
         ad.picture = picture;
         ad.location = location;
         ad.createdAt = createdAt;
+        const category = await Category.findOneBy({ id: categoryId });
+        if (category) ad.category = category;
         ad.save()
         res.status(200).send('Ad created !')
     } catch (error) {

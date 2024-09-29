@@ -15,7 +15,7 @@ Content-Type: application/json
     "picture": "",
     "location": "Paris",
     "createdAt": "2023-10-05T10:14:15.922Z",
-    "category": "Bike"
+    "categoryId": 1
 }
 
 ###
@@ -35,7 +35,7 @@ Content-Type: application/json
     "picture": "",
     "location": "Paris",
     "createdAt": "2023-10-05T10:14:15.922Z",
-    "category": "Bike"
+    "categoryId": 2
 }
 
 ###
