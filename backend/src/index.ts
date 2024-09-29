@@ -17,10 +17,18 @@ app.get('/', (req, res) => {
 
 app.get('/ads', async (req, res) => {
     try {
+        const categoryId = Number(req.query.category);
+        let whereClause = {};
+        if (categoryId) {
+            whereClause = {
+                category: {id: categoryId}
+            }
+        }
         const ads = await Ad.find({
             relations: {
                 category: true,
-            }
+            },
+            where: whereClause
         })
         if (ads.length === 0) res.status(404).send('No ad found')
         else res.json(ads)
@@ -99,7 +107,7 @@ app.delete('/ad/:id', async (req, res) => {
 app.put('/ad/:id', async (req, res) => {
     try {
         const id = Number(req.params.id)
-        const {title, description, owner, price, picture, location, createdAt} = req.body;
+        const {title, description, owner, price, picture, location, createdAt, categoryId} = req.body;
         const ad = await Ad.findOneBy({ id })
         if (!ad) res!.sendStatus(404)
         else {
@@ -110,6 +118,8 @@ app.put('/ad/:id', async (req, res) => {
             ad!.createdAt = createdAt;
             ad!.picture = picture;
             ad!.location = location;
+            const category = await Category.findOneBy({ id: categoryId });
+            if (category) ad.category = category;
             ad!.save();
             res.sendStatus(200)
         }
