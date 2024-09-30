@@ -4,7 +4,11 @@ GET http://localhost:3000/ads?category=1
 ###
 GET http://localhost:3000/categories
 ###
-GET http://localhost:3000/ad/22
+GET http://localhost:3000/tags
+###
+DELETE http://localhost:3000/tag/1
+###
+GET http://localhost:3000/ad/23
 ###
 POST http://localhost:3000/ads
 Content-Type: application/json
@@ -17,13 +21,13 @@ Content-Type: application/json
     "picture": "",
     "location": "Paris",
     "createdAt": "2023-10-05T10:14:15.922Z",
-    "categoryId": 1
+    "categoryId": 1,
+    "tags": ["tag7"]
 }
 
 ###
 
 DELETE http://localhost:3000/ad/13
-
 ###
 
 PUT http://localhost:3000/ad/22
