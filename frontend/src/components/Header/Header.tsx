@@ -2,6 +2,22 @@
 
 
 export default function Header() {
+    const categories = [
+        "Ameublement",
+        "Électroménager",
+        "Photographie",
+        "Téléphonie",
+        "Informatique",
+        "Véhicules",
+        "Vélos",
+        "Habillement",
+        "Sport",
+        "Outillage",
+        "Bébé",
+        "Services",
+        "Vacances",
+    ]
+
     return (<header className="header">
       <div className="main-menu">
         <h1>
@@ -32,19 +48,13 @@ export default function Header() {
         <a href="/post-ad" className="button link-button"><span className="mobile-short-label">Publier</span><span className="desktop-long-label">Publier une annonce</span></a>
       </div>
       <nav className="categories-navigation">
-        <a href="" className="category-navigation-link">Ameublement</a> •
-        <a href="" className="category-navigation-link">Électroménager</a> •
-        <a href="" className="category-navigation-link">Photographie</a> •
-        <a href="" className="category-navigation-link">Informatique</a> •
-        <a href="" className="category-navigation-link">Téléphonie </a> •
-        <a href="" className="category-navigation-link">Vélos</a> •
-        <a href="" className="category-navigation-link">Véhicules</a> •
-        <a href="" className="category-navigation-link">Sport</a> •
-        <a href="" className="category-navigation-link">Habillement</a> •
-        <a href="" className="category-navigation-link">Bébé</a> •
-        <a href="" className="category-navigation-link">Outillage</a> •
-        <a href="" className="category-navigation-link">Services </a> •
-        <a href="" className="category-navigation-link">Vacances</a>
+        {categories.map((category, id) => (
+           <>
+            {id > 0 && "•"}
+            <a href="" className="category-navigation-link">{category}</a>
+           </>
+           
+        ))}
       </nav>
     </header>)
 }

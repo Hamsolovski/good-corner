@@ -1,15 +1,22 @@
+
+import { Route, Routes } from 'react-router-dom'
 import './App.css'
-import Header from './components/Header/Header'
+import Layout from './pages/Layout'
 import RecentAds from './components/RecentAds/RecentAds'
+import About from './pages/About/About'
+import AdDetails from './pages/AdDetails/AdDetails'
 
 function App() {
 
 
   return (
-    <>
-      <Header />
-      <RecentAds />
-    </>
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        <Route index element={<RecentAds/>} />
+        <Route path='/about' element={<About />} />
+        <Route path='/ad/:id' element={<AdDetails />} />
+      </Route>
+    </Routes>
   )
 }
 
