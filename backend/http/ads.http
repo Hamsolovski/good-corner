@@ -1,6 +1,6 @@
 GET http://localhost:3000/ads
 ###
-GET http://localhost:3000/ads?category=1
+GET http://localhost:3000/ads?tag=4
 ###
 GET http://localhost:3000/categories
 ###
@@ -8,7 +8,7 @@ GET http://localhost:3000/tags
 ###
 DELETE http://localhost:3000/tag/1
 ###
-GET http://localhost:3000/ad/23
+GET http://localhost:3000/ad/19
 ###
 POST http://localhost:3000/ads
 Content-Type: application/json
@@ -18,11 +18,11 @@ Content-Type: application/json
     "description": "My bike is green, it's very nice",
     "owner": "dealerdebike@gmail.com",
     "price": 100,
-    "picture": "",
+    "picture": "https://cdn.shopify.com/s/files/1/1234/3118/files/20200727_AC_Mosaic_RT2_JB-4121-Edit_2048x2048.jpg?v=1597969281",
     "location": "Paris",
     "createdAt": "2023-10-05T10:14:15.922Z",
     "categoryId": 1,
-    "tags": ["tag7"]
+    "tags": ["tag38"]
 }
 
 ###
@@ -38,7 +38,7 @@ Content-Type: application/json
     "description": "My bike has neon wheels, it's incredibly nice",
     "owner": "dealerdebike@gmail.com",
     "price": 10203,
-    "picture": "",
+    "picture": "https://image.doba.com/dg7-lNKbVhScBeqD/4pc-pack-neon-led-lights-for-bikes-cars-motorcycles.webp",
     "location": "Paris",
     "createdAt": "2023-10-05T10:14:15.922Z",
     "categoryId": 6

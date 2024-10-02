@@ -4,11 +4,12 @@ import { dataSource } from "./config/db";
 import { Ad } from "../entities/Ad";
 import { Category } from "../entities/Category";
 import { Tag } from "../entities/Tag";
-import { In } from "typeorm";
+import cors from "cors";
 
 // APP INITIALISATION
 const app = express();
 const port = 3000;
+app.use(cors())
 app.use(express.json());
 
 
@@ -20,12 +21,10 @@ app.get('/', (req, res) => {
 app.get('/ads', async (req, res) => {
     try {
         const categoryId = Number(req.query.category);
-        let whereClause = {};
-        if (categoryId) {
-            whereClause = {
-                category: {id: categoryId}
-            }
-        }
+        const tagId = Number(req.query.tag);
+        let whereClause: Record<string,any> = {};
+        if (categoryId) whereClause.category = {id: categoryId}
+        if (tagId) whereClause.tags = {id: tagId}
         const ads = await Ad.find({
             relations: {
                 category: true,
@@ -60,9 +59,7 @@ app.get('/tags', async(req, res) => {
         const tags = await Tag.find()
         if (tags.length === 0) res.status(404).send('No tag found')
         else res.json(tags)
-        console.log(tags)
     } catch (error) {
-        console.log(error)
         res.status(500).send(error)
     }
 })
@@ -90,37 +87,38 @@ app.post('/ads', async (req, res) => {
     try {
         const {title, description, owner, price, picture, location, createdAt, categoryId, tags} = req.body;
         const currentTags = await Tag.find()
-        console.log('tags', currentTags)
-        tags.forEach((name: string) => {
+        const tagsToSave: Tag[] = []
+        if (tags) tags.forEach((name: string) => {
             if (!(currentTags.find(tag => tag.name === name))) {
                 const tag = new Tag();
                 tag.name = name;
-                tag.save();
+                tagsToSave.push(tag);
             }
-        });
+        })
+        await Tag.save(tagsToSave);
 
         const ad = new Ad();
         ad.title = title;
         ad.description = description;
         ad.owner = owner;
-        ad.price = price;
-        ad.picture = picture;
+        ad.price = Number(price);
+        ad.picture = "https://www.l214.com/wp-content/uploads/2021/06/vache-meugle-1024x535.jpg";
         ad.location = location;
-        ad.createdAt = createdAt;
+        ad.createdAt = new Date().toDateString();
         const category = await Category.findOneBy({ id: categoryId });
         if (category) ad.category = category;
 
         const tagList: Tag[] = [];
         const allTags = await Tag.find()
-        tags.forEach((name:string) => {
+        if (tags) tags.forEach((name:string) => {
             const t = allTags.find(tag => tag.name === name)
-            console.log(t)
             if (t) tagList.push(t)
         })
         ad.tags = tagList;
         ad.save()
         res.status(200).send('Ad created !')
     } catch (error) {
+        console.error(error)
         res.status(500).send(error)
     }
 })
