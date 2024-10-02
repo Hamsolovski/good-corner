@@ -32,6 +32,10 @@ h1 {
 }
  
 .categories-navigation {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  gap: 6px;
   font-size: 12px;
   font-weight: bold;
   color: #666;
@@ -128,7 +132,9 @@ h1 {
 }
  
 .ad-card-image {
+  object-fit: cover;
   width: 100%;
+  height: 150px;
   border-radius: 8px;
 }
  
@@ -156,6 +162,16 @@ h1 {
   display: grid;
   gap: 24px;
 }
+
+.ad-post-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  button, select {
+    max-width: fit-content;
+  }
+}
  
 @media screen and (min-width: 720px) {
   .mobile-short-label {
@@ -167,8 +183,6 @@ h1 {
  
   .categories-navigation {
     padding-top: 14px;
-    display: flex;
-    justify-content: space-between;
   }
  
   .ad-details-image-container {

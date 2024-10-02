@@ -1,56 +1,47 @@
-import AdCard from "../AdCard/AdCard";
+import { useEffect, useState } from "react";
+import AdCard, { AdCardProps } from "../AdCard/AdCard";
+import axios from "axios";
 
 
 
 export default function RecentAds() {
 
-    const ads = [
-        {
-            imgUrl: "/images/table.webp",
-            title: "Table",
-            link: "/ad/table",
-            price: "120 €"
-        },
-        {
-            imgUrl: "/images/dame-jeanne.webp",
-            title: "Dame-Jeanne",
-            link: "/ad/dame-jeanne",
-            price: "75 €"
-        },
-        {
-            imgUrl: "/images/vide-poche.webp",
-            title: "Vide-Poche",
-            link: "/ad/vide-poche",
-            price: "4 €"
-        },
-        {
-            imgUrl: "/images/vaisselier.webp",
-            title: "Vaisselier",
-            link: "/ad/vaisselier",
-            price: "900 €"
-        },
-        {
-            imgUrl: "/images/bougie.webp",
-            title: "Bougie",
-            link: "/ad/bougie",
-            price: "8 €"
-        },
-        {
-            imgUrl: "/images/porte-magazine.webp",
-            title: "Porte-Magazine",
-            link: "/ad/porte-magazine",
-            price: "45 €"
-        }
-        
-    ]
+    const [ads, setAds] = useState<AdCardProps[]>([]);
+
+    const [total, setTotal] = useState(0);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const result = await axios.get<AdCardProps[]>('http://localhost:3000/ads')
+                setAds(result.data)
+            } catch (error) {
+                console.error(error)
+            }
+        };
+        fetchData();
+    }, [])
 
 
     return (
     <main className="main-content">
       <h2>Annonces récentes</h2>
+      <p>Prix total: {total}</p>
       <section className="recent-ads">
         {ads.map((ad) => (
-            <AdCard link={ad.link} imgUrl={ad.imgUrl} price={ad.price} title={ad.title} key={ad.title}/>
+            <div key={ad.title}>
+                <AdCard id={ad.id} link={ad.link} picture={ad.picture} price={ad.price} title={ad.title}/>
+                <button 
+                    className="button"
+                    onClick={() => {
+                        setTotal(total + ad.price);
+                    }}
+                >
+                    Add price to total
+                </button>
+            </div>
+            
+            
         ))}
         
       </section>
