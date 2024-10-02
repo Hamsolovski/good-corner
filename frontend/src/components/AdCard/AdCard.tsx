@@ -6,11 +6,11 @@ export type AdCardProps = {
   owner?: string;
   picture: string;
   price: number;
-  link: string;
+  setTotal: Function;
+  total: number;
 }
 
-export default function AdCard({ id, title, picture, price, link}: AdCardProps) {
-   console.log(title, picture, price, link)
+export default function AdCard({ id, title, picture, price, setTotal, total}: AdCardProps) {
     return (
         <div className="ad-card-container">
           <a className="ad-card-link" href={`/ad/${id}`}>
@@ -20,6 +20,14 @@ export default function AdCard({ id, title, picture, price, link}: AdCardProps) 
               <div className="ad-card-price">{price} €</div>
             </div>
           </a>
+          <button 
+                    className="button"
+                    onClick={() => {
+                        setTotal(total + price);
+                    }}
+                >
+                    Add to cart
+                </button>
         </div>
     )
 }

@@ -50,6 +50,7 @@ h1 {
 }
  
 .button {
+  margin: 10px;
   min-width: 40px;
   height: 40px;
   padding: 8px;
@@ -97,6 +98,11 @@ h1 {
   border-radius: 8px;
   font-size: 12px;
   font-family: inherit;
+}
+
+.tag-input {
+  display: flex;
+  align-items: center;
 }
  
 .link-button {

@@ -50,7 +50,7 @@ export default function Header() {
             </svg>
           </button>
         </form>
-        <a href="/post-ad" className="button link-button">
+        <a href="/ad/new" className="button link-button">
           <span className="mobile-short-label">Publier</span>
           <span className="desktop-long-label">Publier une annonce</span>
         </a>
@@ -60,7 +60,8 @@ export default function Header() {
           <>
             {id > 0 && "•"}
             <a
-              href={`/ads?category=${category.id}`}
+              href={`/?category=${category.id}`}
+              key={category.name}
               className="category-navigation-link"
             >
               {category.name}

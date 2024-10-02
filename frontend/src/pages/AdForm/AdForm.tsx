@@ -1,4 +1,9 @@
-import { FormEvent, useEffect, useState } from "react";
+export type TagProps = {
+    id: number;
+    name: string;
+  };
+
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { CategoriesProps } from "../../components/Header/Header";
 import axios from "axios";
 
@@ -8,9 +13,10 @@ export default function AdForm() {
     const form = e.target;
     const formData = new FormData(form as HTMLFormElement);
     const formJson = Object.fromEntries(formData.entries());
+    formJson.tags = JSON.stringify(tags);
 
-    console.log(formJson)
-    axios.post("http://localhost:3000/ads", formJson)
+    console.log(formJson);
+    axios.post("http://localhost:3000/ads", formJson);
   };
 
   const [categories, setCategories] = useState<CategoriesProps[]>([]);
@@ -24,6 +30,16 @@ export default function AdForm() {
   useEffect(() => {
     fetchCategories();
   }, []);
+
+  const [tags, setTags] = useState<string[]>([]);
+  const tag = useRef<HTMLInputElement | null>(null);
+
+  const handleTag = () => {
+        if (!(tags.includes(tag.current!.value))) {
+            setTags([...tags, tag.current!.value]);
+    }
+    
+  };
 
   return (
     <form onSubmit={handleSubmit} className="ad-post-form">
@@ -48,19 +64,31 @@ export default function AdForm() {
         <input className="text-field" name="price" />
       </label>
       <label>
-        Tags <br />
-        <input className="text-field" name="tags" />
+        Tags
+        <div className="tag-input">
+          <input className="text-field" name="tags" ref={tag} />
+          <button className="button" type="button" onClick={handleTag}>
+            add Tag
+          </button>
+        </div>
       </label>
+      <div className="tag-list">
+        {tags.map((tag) => (
+          <div>{tag}</div>
+        ))}
+      </div>
+
       <select name="categoryId" className="text-field">
         {categories.map((cat) => (
-          <option value={cat.id} key={cat.id}>{cat.name}</option>
+          <option value={cat.id} key={cat.id}>
+            {cat.name}
+          </option>
         ))}
       </select>
 
       <button className="button" type="submit">
         Submit
       </button>
-      
     </form>
   );
 }
