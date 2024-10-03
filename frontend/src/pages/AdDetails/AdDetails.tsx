@@ -24,14 +24,21 @@ export default function AdDetails() {
     fetchData();
   }, []);
 
+
+
   const deleteAd = async () => {
     try {
-      await axios.delete(`http://localhost:3000/ads/${id}`);
+      await axios.delete(`/ads/${id}`);
       navigate('/')
     } catch (error) {
       console.error(error);
     }
   }
+
+  const updateAd = async () => {
+      navigate(`/ad/${id}/update`);
+  }
+
 
   return (
     <main className="main-content">
@@ -71,6 +78,7 @@ export default function AdDetails() {
         </div>
       </section>
       <button className="button" onClick={deleteAd}>Delete ad</button>
+      <button className="button" onClick={updateAd}>Update ad</button>
     </main>
   );
 }

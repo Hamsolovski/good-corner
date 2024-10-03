@@ -1,6 +1,6 @@
 GET http://localhost:3000/ads
 ###
-GET http://localhost:3000/ads?category=4
+GET http://localhost:3000/ads?search=bike
 ###
 GET http://localhost:3000/categories
 ###
@@ -30,7 +30,7 @@ Content-Type: application/json
 DELETE http://localhost:3000/ad/25
 ###
 
-PUT http://localhost:3000/ad/22
+PUT http://localhost:3000/ads/2
 Content-Type: application/json
 
 {

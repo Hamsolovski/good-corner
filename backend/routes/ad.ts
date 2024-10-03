@@ -2,6 +2,7 @@ import { Router } from "express";
 import { Ad } from "../entities/Ad";
 import { Tag } from "../entities/Tag";
 import { Category } from "../entities/Category";
+import { Like } from "typeorm";
 
 const adsRouter = Router();
 
@@ -9,7 +10,9 @@ adsRouter.get("/", async (req, res) => {
   try {
     const categoryId = Number(req.query.category);
     const tagId = Number(req.query.tag);
+    const search = req.query.search;
     let whereClause: Record<string, any> = {};
+    if (search && search !== undefined) whereClause = { title: Like(`%${search}%`)}
     if (categoryId) whereClause.category = { id: categoryId };
     if (tagId) whereClause.tags = { id: tagId };
     const ads = await Ad.find({
@@ -93,7 +96,6 @@ adsRouter.post("/", async (req, res) => {
     ad.save();
     res.status(200).send("Ad created !");
   } catch (error) {
-    console.error(error);
     res.status(500).send(error);
   }
 });
@@ -106,6 +108,39 @@ adsRouter.delete("/:id", async (req, res) => {
     else {
       ad.remove();
       res.status(204).send("Ad deleted !");
+    }
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
+adsRouter.put("/:id", async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const {
+      title,
+      description,
+      owner,
+      price,
+      picture,
+      location,
+      createdAt,
+      categoryId,
+    } = req.body;
+    const ad = await Ad.findOneBy({ id });
+    if (!ad) res!.sendStatus(404);
+    else {
+      ad!.title = title;
+      ad!.description = description;
+      ad!.owner = owner;
+      ad!.price = price;
+      ad!.createdAt = createdAt;
+      ad!.picture = picture;
+      ad!.location = location;
+      const category = await Category.findOneBy({ id: categoryId });
+      if (category) ad.category = category;
+      ad!.save();
+      res.sendStatus(200);
     }
   } catch (error) {
     res.status(500).send(error);

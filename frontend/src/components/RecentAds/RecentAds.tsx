@@ -8,22 +8,26 @@ export default function RecentAds() {
     const [ads, setAds] = useState<AdCardProps[]>([]);
     const [searchParams] = useSearchParams();
     const cat = searchParams.get('category')
+    const search = searchParams.get('search')
 
     const [total, setTotal] = useState(0);
 
+    const fetchData = async () => {
+        try {
+            let url = 'http://localhost:3000/ads'
+            if (cat) url = `http://localhost:3000/ads?category=${cat}`
+            if (search) url = `http://localhost:3000/ads?search=${search}`
+            console.log(url)
+            const result = await axios.get<AdCardProps[]>(url)
+            setAds(result.data)
+        } catch (error) {
+            console.error(error)
+        }            
+};
+
     useEffect(() => {
-        console.log(cat)
-        const fetchData = async () => {
-                try {
-                    const result = await axios.get<AdCardProps[]>(cat ? `http://localhost:3000/ads?category=${cat}` : 'http://localhost:3000/ads')
-                    console.log()
-                    setAds(result.data)
-                } catch (error) {
-                    console.error(error)
-                }            
-        };
         fetchData();
-    }, [cat])
+    }, [cat, search])
 
 
     return (

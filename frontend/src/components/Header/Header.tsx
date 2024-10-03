@@ -4,10 +4,18 @@ export type CategoriesProps = {
 };
 
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Header() {
+  const navigate = useNavigate()
   const [categories, setCategories] = useState<CategoriesProps[]>([]);
+  const [search, setSearch] = useState<string>("")
+
+  const handleSubmit = (e:FormEvent) => {
+    e.preventDefault()
+    navigate(`/?search=${search}`)
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -32,9 +40,9 @@ export default function Header() {
             <span className="desktop-long-label">THE GOOD CORNER</span>
           </a>
         </h1>
-        <form className="text-field-with-button">
-          <input className="text-field main-search-field" type="search" />
-          <button className="button button-primary" type="button">
+        <form className="text-field-with-button" onSubmit={handleSubmit}>
+          <input className="text-field main-search-field" type="search" value={search} onChange={(e) => setSearch(e.target.value)}/>
+          <button className="button button-primary" type="submit">
             <svg
               aria-hidden="true"
               width="16"
