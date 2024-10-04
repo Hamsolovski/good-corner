@@ -39,7 +39,6 @@ export default function RecentAds() {
               id={ad.id}
               picture={ad.picture}
               price={ad.price}
-              location={ad.location}
               title={ad.title}
               setTotal={setTotal}
             />

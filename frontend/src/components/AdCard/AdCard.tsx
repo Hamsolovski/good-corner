@@ -1,16 +1,9 @@
-import { TagProps } from "../../pages/AdForm/AdForm";
-
 export type AdCardProps = {
   id: number;
   title: string;
-  description?: string;
-  createdAt: string;
-  owner?: string;
   picture: string;
-  location: string;
   price: number;
   setTotal: Function;
-  tags: TagProps[];
 };
 
 export default function AdCard({

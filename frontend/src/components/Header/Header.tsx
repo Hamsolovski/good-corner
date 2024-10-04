@@ -1,28 +1,22 @@
-export type CategoriesProps = {
-  id: number;
-  name: string;
-};
-
-import axios from "axios";
 import { FormEvent, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { ApiResult } from "../../types/Generic";
+import { getCategories } from "../Api/Api";
 
 export default function Header() {
-  const navigate = useNavigate()
-  const [categories, setCategories] = useState<CategoriesProps[]>([]);
-  const [search, setSearch] = useState<string>("")
+  const navigate = useNavigate();
+  const [categories, setCategories] = useState<ApiResult[]>([]);
+  const [search, setSearch] = useState<string>("");
 
-  const handleSubmit = (e:FormEvent) => {
-    e.preventDefault()
-    navigate(`/?search=${search}`)
-  }
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    navigate(`/?search=${search}`);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data } = await axios.get<CategoriesProps[]>(
-          "http://localhost:3000/categories"
-        );
+        const data = await getCategories()
         setCategories(data);
       } catch (error) {
         console.error(error);
@@ -41,7 +35,12 @@ export default function Header() {
           </Link>
         </h1>
         <form className="text-field-with-button" onSubmit={handleSubmit}>
-          <input className="text-field main-search-field" type="search" value={search} onChange={(e) => setSearch(e.target.value)}/>
+          <input
+            className="text-field main-search-field"
+            type="search"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
           <button className="button button-primary" type="submit">
             <svg
               aria-hidden="true"

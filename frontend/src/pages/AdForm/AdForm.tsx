@@ -1,11 +1,6 @@
-export type TagProps = {
-    id: number;
-    name: string;
-  };
-
 import { FormEvent, useEffect, useRef, useState } from "react";
-import { CategoriesProps } from "../../components/Header/Header";
 import axios from "axios";
+import { ApiResult } from "../../types/api";
 
 export default function AdForm() {
   const handleSubmit = (e: FormEvent) => {
@@ -19,9 +14,9 @@ export default function AdForm() {
     axios.post("http://localhost:3000/ads", formJson);
   };
 
-  const [categories, setCategories] = useState<CategoriesProps[]>([]);
+  const [categories, setCategories] = useState<ApiResult[]>([]);
   const fetchCategories = async () => {
-    const { data } = await axios.get<CategoriesProps[]>(
+    const { data } = await axios.get<ApiResult[]>(
       "http://localhost:3000/categories"
     );
     setCategories(data);
@@ -35,10 +30,9 @@ export default function AdForm() {
   const tag = useRef<HTMLInputElement | null>(null);
 
   const handleTag = () => {
-        if (!(tags.includes(tag.current!.value))) {
-            setTags([...tags, tag.current!.value]);
+    if (!tags.includes(tag.current!.value)) {
+      setTags([...tags, tag.current!.value]);
     }
-    
   };
 
   return (
@@ -74,7 +68,7 @@ export default function AdForm() {
       </label>
       <div className="tag-list">
         {tags.map((tag) => (
-          <div>{tag}</div>
+          <div className="tag">{tag}</div>
         ))}
       </div>
 

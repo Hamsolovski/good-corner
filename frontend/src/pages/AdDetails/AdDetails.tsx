@@ -1,20 +1,18 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { AdCardProps } from "../../components/AdCard/AdCard";
 import { DateTime } from "luxon";
 import axios from "axios";
+import { Ad } from "../../types/api";
 
 export default function AdDetails() {
   const { id } = useParams();
-  const [ad, setAd] = useState<AdCardProps>();
+  const [ad, setAd] = useState<Ad>();
 
   const navigate = useNavigate();
 
   const fetchData = async () => {
     try {
-      const { data } = await axios.get<AdCardProps>(
-        `http://localhost:3000/ads/${id}`
-      );
+      const { data } = await axios.get<Ad>(`http://localhost:3000/ads/${id}`);
       setAd(data);
     } catch (error) {
       console.error(error);

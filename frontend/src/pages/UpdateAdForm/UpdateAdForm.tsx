@@ -4,15 +4,12 @@ export type TagProps = {
 };
 
 import { FormEvent, useEffect, useRef, useState } from "react";
-import { CategoriesProps } from "../../components/Header/Header";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import { AdCardProps } from "../../components/AdCard/AdCard";
+import { Ad, ApiResult } from "../../types/api";
 
 export default function UpdateAdForm() {
   const { id } = useParams();
-
-
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -25,20 +22,27 @@ export default function UpdateAdForm() {
     axios.put(`http://localhost:3000/ads/${id}`, formJson);
   };
 
-  const [ad, setAd] = useState<AdCardProps | null>(null)
-  const fetchAd = async () => {
-    const { data } = await axios.get<AdCardProps>(`http://localhost:3000/ads/${id}`)
-    setAd(data)
-  }
+  const [ad, setAd] = useState<Ad | null>(null);
+  const [tags, setTags] = useState<string[]>([]);
+  const tag = useRef<HTMLInputElement | null>(null);
 
-  const [categories, setCategories] = useState<CategoriesProps[]>([]);
+  const fetchAd = async () => {
+    let { data } = await axios.get(`http://localhost:3000/ads/${id}`);
+    setAd(data);
+    data = data.tags.map((apiTag:ApiResult) => (apiTag.name))
+    setTags(data);
+  
+  };
+
+  const [categories, setCategories] = useState<ApiResult[]>([]);
   const fetchCategories = async () => {
-    const { data } = await axios.get<CategoriesProps[]>("http://localhost:3000/categories");
+    const { data } = await axios.get<ApiResult[]>(
+      "http://localhost:3000/categories"
+    );
     setCategories(data);
   };
 
-  const [tags, setTags] = useState<string[]>([]);
-  const tag = useRef<HTMLInputElement | null>(null);
+
 
   const handleTag = () => {
     if (!tags.includes(tag.current!.value)) {
@@ -51,27 +55,37 @@ export default function UpdateAdForm() {
     fetchCategories();
   }, []);
 
+  if (!ad) return "loading";
+
   return (
     <form onSubmit={handleSubmit} className="ad-post-form">
       <label>
         Ad title <br />
-        <input className="text-field" name="title" defaultValue={ad?.title}/>
+        <input className="text-field" name="title" defaultValue={ad.title} />
       </label>
       <label>
         Description <br />
-        <input className="text-field" name="description" defaultValue={ad?.description}/>
+        <input
+          className="text-field"
+          name="description"
+          defaultValue={ad.description}
+        />
       </label>
       <label>
         Owner <br />
-        <input className="text-field" name="owner" defaultValue={ad?.owner}/>
+        <input className="text-field" name="owner" defaultValue={ad.owner} />
       </label>
       <label>
         Location <br />
-        <input className="text-field" name="location" defaultValue={ad?.location}/>
+        <input
+          className="text-field"
+          name="location"
+          defaultValue={ad.location}
+        />
       </label>
       <label>
         Price <br />
-        <input className="text-field" name="price" defaultValue={ad?.price}/>
+        <input className="text-field" name="price" defaultValue={ad.price} />
       </label>
       <label>
         Tags
@@ -90,7 +104,11 @@ export default function UpdateAdForm() {
 
       <select name="categoryId" className="text-field">
         {categories.map((cat) => (
-          <option value={cat.id} key={cat.id}>
+          <option
+            value={cat.id}
+            key={cat.id}
+            selected={cat.id === ad?.category.id}
+          >
             {cat.name}
           </option>
         ))}
