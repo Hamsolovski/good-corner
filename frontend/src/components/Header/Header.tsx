@@ -5,7 +5,7 @@ export type CategoriesProps = {
 
 import axios from "axios";
 import { FormEvent, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Header() {
   const navigate = useNavigate()
@@ -35,10 +35,10 @@ export default function Header() {
     <header className="header">
       <div className="main-menu">
         <h1>
-          <a href="/" className="button logo link-button">
+          <Link to="/" className="button logo link-button">
             <span className="mobile-short-label">TGC</span>
             <span className="desktop-long-label">THE GOOD CORNER</span>
-          </a>
+          </Link>
         </h1>
         <form className="text-field-with-button" onSubmit={handleSubmit}>
           <input className="text-field main-search-field" type="search" value={search} onChange={(e) => setSearch(e.target.value)}/>
@@ -67,13 +67,13 @@ export default function Header() {
         {categories.map((category, id) => (
           <>
             {id > 0 && "•"}
-            <a
-              href={`/?category=${category.id}`}
+            <Link
+              to={`/?category=${category.id}`}
               key={category.name}
               className="category-navigation-link"
             >
               {category.name}
-            </a>
+            </Link>
           </>
         ))}
       </nav>

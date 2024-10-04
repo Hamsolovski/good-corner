@@ -70,6 +70,20 @@ h1 {
 .logo {
   border: none;
 }
+
+.tag-list {
+  display: flex;
+  gap: 8px;
+  
+}
+
+.tag {
+  background-color: #ffa41b;
+  color: white;
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 10px;
+}
  
 .button-primary {
   background-color: #ffa41b;
