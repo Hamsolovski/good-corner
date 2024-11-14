@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { Category } from "../entities/Category";
+import { Category } from "../src/entities/Category";
 
 const categoriesRouter = Router();
 
