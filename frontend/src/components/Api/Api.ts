@@ -1,16 +1,18 @@
-import axios from "axios"
-import { ApiResult } from "../../types/api"
 
-const api = axios.create({
-    baseURL: "http://localhost:3000/"
+import { ApolloClient, InMemoryCache } from "@apollo/client"
+
+const uri = 'http://localhost:3000/'
+
+export const client = new ApolloClient({
+  uri: uri,
+  cache: new InMemoryCache()
 })
 
-export const getCategories = async():Promise<ApiResult[]> => {
-    const {data} = await api.get('/categories')
-    return data
-}
-
-export const getTags = async():Promise<ApiResult[]> => {
-    const {data} = await api.get('/tags')
-    return data
-}
+// const searchAds = async (ad:string): Promise <Ad[]> => {
+//     let data
+//     client.query({
+//         query: GET_ALL_ADS
+//     })
+//     .then((result) => data = result)
+//     return data
+// }

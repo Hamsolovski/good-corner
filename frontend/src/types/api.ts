@@ -4,7 +4,7 @@ export type ApiResult = {
 }
 
 export type Ad = {
-  id: number;
+  id: string;
   title: string;
   picture: string;
   description: string;
