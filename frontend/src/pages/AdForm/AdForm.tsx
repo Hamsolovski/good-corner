@@ -1,30 +1,32 @@
-import { FormEvent, useEffect, useRef, useState } from "react";
-import axios from "axios";
-import { ApiResult } from "../../types/api";
+import { FormEvent, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { AdInput, useBrowseCategoriesQuery, useCreateAdMutation } from "../../__generated__/types";
 
 export default function AdForm() {
-  const handleSubmit = (e: FormEvent) => {
+
+  const categories = useBrowseCategoriesQuery()
+  const [createAd, {error, loading}] = useCreateAdMutation()
+
+  const navigate = useNavigate()
+
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     const form = e.target;
     const formData = new FormData(form as HTMLFormElement);
     const formJson = Object.fromEntries(formData.entries());
-    formJson.tags = JSON.stringify(tags);
-
-    console.log(formJson);
-    axios.post("http://localhost:3000/ads", formJson);
+    const submission = {
+      title: formJson.title,
+      description: formJson.description,
+      price: parseInt(formJson.price as string),
+      details: formJson.details,
+      category: formJson.category,
+      owner: formJson.owner,
+      tags: tags,
+      location: formJson.location,
+    }
+    createAd({ variables: {data: submission as AdInput}});
+    navigate('/')
   };
-
-  const [categories, setCategories] = useState<ApiResult[]>([]);
-  const fetchCategories = async () => {
-    const { data } = await axios.get<ApiResult[]>(
-      "http://localhost:3000/categories"
-    );
-    setCategories(data);
-  };
-
-  useEffect(() => {
-    fetchCategories();
-  }, []);
 
   const [tags, setTags] = useState<string[]>([]);
   const tag = useRef<HTMLInputElement | null>(null);
@@ -35,6 +37,9 @@ export default function AdForm() {
     }
   };
 
+  if (loading) return <p>'Submitting...'</p>;
+  if (error) return <p>`Submission error!' ${error.message}`</p>
+  
   return (
     <form onSubmit={handleSubmit} className="ad-post-form">
       <label>
@@ -72,8 +77,8 @@ export default function AdForm() {
         ))}
       </div>
 
-      <select name="categoryId" className="text-field">
-        {categories.map((cat) => (
+      <select name="category" className="text-field">
+        {!categories.loading && categories.data!.browseCategories.map((cat) => (
           <option value={cat.id} key={cat.id}>
             {cat.name}
           </option>

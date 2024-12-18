@@ -76,6 +76,16 @@ export class AdResolver {
     return ad;
   }
 
+  // BROWSE ADS BY CATEGORY
+  @Query(() => [Ad])
+  async getAdsByCategory(@Arg("id") id: string) {
+    const ads = await Ad.find({ 
+      where:{category: {id}},
+      relations:["category", "tags"]
+    });
+    return ads;
+  }
+
   // CREATE AN AD
   @Mutation(() => Ad)
   async createAd(@Arg("data") data: AdInput) {
@@ -86,7 +96,8 @@ export class AdResolver {
     if (tags && tags.length > 0) {
       for (const tagName of tags) {
         let tag = await Tag.findOne({where: {name: tagName}});
-        if (!tag) {
+        if (tag) adTags.push(tag)
+        else {
           let newTag = new Tag();
           newTag.name = tagName;
           await newTag.save();
@@ -96,6 +107,8 @@ export class AdResolver {
     }
 
     ad = Object.assign(ad, {...data})
+    ad.picture = 
+    "https://www.l214.com/wp-content/uploads/2021/06/vache-meugle-1024x535.jpg";
     ad.tags = adTags
     await ad.save();
     return ad;
@@ -120,9 +133,26 @@ export class AdResolver {
         tags: true
       }
     })
+
+    const tags = data.tags;
+    let adTags = [];
+    if (tags && tags.length > 0) {
+      for (const tagName of tags) {
+        let tag = await Tag.findOne({where: {name: tagName}});
+        if (tag) adTags.push(tag)
+        else {
+          let newTag = new Tag();
+          newTag.name = tagName;
+          await newTag.save();
+          adTags.push(newTag)
+        }
+      }
+    }
+
     ad = Object.assign(ad, {
       ...data,
     })
+    ad.tags = adTags
     await ad.save();
     return ad;
   }

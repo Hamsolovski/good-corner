@@ -1,19 +1,20 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { DateTime } from "luxon";
-import { useMutation, useQuery } from "@apollo/client";
-import { DELETE_AD_BY_ID, GET_AD_BY_ID } from "../../graphql/adQueries";
 import { ApiResult } from "../../types/api";
+import { useDeleteAdByIdMutation, useGetAdByIdQuery } from "../../__generated__/types";
 
 export default function AdDetails() {
   const { id } = useParams();
 
   const navigate = useNavigate();
+  
+  if (!id) throw new Error("id is required")
 
-  const ad = useQuery(GET_AD_BY_ID, {
+  const ad = useGetAdByIdQuery({
     variables: { id: id },
   });
 
-  const [deleteAd, { loading }] = useMutation(DELETE_AD_BY_ID, {
+  const [deleteAd, { loading }] = useDeleteAdByIdMutation({
     variables: { id: id },
     onCompleted: () => {
       navigate("/");
@@ -36,39 +37,39 @@ export default function AdDetails() {
       {ad.loading ? <p>loading</p> : null}
       {!ad.loading && (
         <>
-          <h2 className="ad-details-title">{ad.data.getAdById.title}</h2>
+          <h2 className="ad-details-title">{ad.data!.getAdById.title} - {ad.data!.getAdById.location}</h2>
           <section className="ad-details">
             <div className="ad-details-image-container">
               <img
                 className="ad-details-image"
-                src={ad.data.getAdById.picture}
+                src={ad.data!.getAdById.picture}
               />
             </div>
             <div className="ad-details-info">
               <div className="ad-details-price">
-                {ad.data.getAdById.price} €
+                {ad.data!.getAdById.price} €
               </div>
               <div className="ad-details-description">
-                {ad.data.getAdById.description}
+                {ad.data!.getAdById.description}
               </div>
               <div className="tag-list">
                 <div className="tag-list">
-                  {ad.data.getAdById.tags.map((tag: ApiResult) => (
+                  {ad.data!.getAdById.tags.map((tag: ApiResult) => (
                     <div className="tag">{tag.name}</div>
                   ))}
                 </div>
               </div>
               <hr className="separator" />
               <div className="ad-details-owner">
-                Ad created by <b>{ad.data.getAdById.owner}</b> on{" "}
+                Ad created by <b>{ad.data!.getAdById.owner}</b> on{" "}
                 {ad &&
-                  DateTime.fromISO(ad.data.getAdById.createdAt).toLocaleString(
+                  DateTime.fromISO(ad.data!.getAdById.createdAt).toLocaleString(
                     DateTime.DATETIME_SHORT
                   )}
                 .
               </div>
               <Link
-                to={`mailto:${ad.data.getAdById.owner}`}
+                to={`mailto:${ad.data!.getAdById.owner}`}
                 className="button button-primary link-button"
               >
                 <svg

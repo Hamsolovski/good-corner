@@ -1,11 +1,12 @@
 import { useState } from "react";
-import AdCard, { AdCardProps } from "../AdCard/AdCard";
-import { useQuery } from "@apollo/client";
-import { GET_ALL_ADS } from "../../graphql/adQueries";
-import GET_ALL_CATEGORIES from "../../graphql/categoryQuery";
+import AdCard from "../AdCard/AdCard";
+import { useSearchParams } from "react-router-dom";
+import { useBrowseAdsQuery, useGetAdsByCategoryQuery } from "../../__generated__/types";
 
 export default function RecentAds() {
   const [total, setTotal] = useState(0);
+  const [searchParams] = useSearchParams();
+  const cat = searchParams.get('category')
 
   // const fetchData = async () => {
   //   try {
@@ -24,7 +25,8 @@ export default function RecentAds() {
   //   fetchData();
   // }, [cat, search]);
 
-  const ads = useQuery(GET_ALL_ADS);
+  const ads = useBrowseAdsQuery();
+  const filteredAds = useGetAdsByCategoryQuery({variables: {id: cat}})
 
   return (
     <main className="main-content">
@@ -33,7 +35,8 @@ export default function RecentAds() {
       <section className="recent-ads">
         {ads.loading && <p>Loading...</p>}
         {ads.error && <p>Something went wrong</p>}
-        {!ads.loading &&
+        {!ads.data && <p>No content found.</p>}
+        {!ads.loading && !ads.error && ads.data && (
           ads.data.browseAds.map((ad) => (
             <div key={ad.title}>
               <AdCard
@@ -44,7 +47,8 @@ export default function RecentAds() {
                 setTotal={setTotal}
               />
             </div>
-          ))}
+          ))
+        )}
       </section>
     </main>
   );
