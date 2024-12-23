@@ -21,13 +21,13 @@ Content-Type: application/json
     "picture": "https://cdn.shopify.com/s/files/1/1234/3118/files/20200727_AC_Mosaic_RT2_JB-4121-Edit_2048x2048.jpg?v=1597969281",
     "location": "Paris",
     "createdAt": "2023-10-05T10:14:15.922Z",
-    "categoryId": 1,
-    "tags": ["tag38"]
+    "category": 1,
+    "tags": "[tag38]"
 }
 
 ###
 
-DELETE http://localhost:3000/ad/25
+DELETE http://localhost:3000/ads/3
 ###
 
 PUT http://localhost:3000/ads/2
@@ -40,7 +40,6 @@ Content-Type: application/json
     "price": 10203,
     "picture": "https://image.doba.com/dg7-lNKbVhScBeqD/4pc-pack-neon-led-lights-for-bikes-cars-motorcycles.webp",
     "location": "Paris",
-    "createdAt": "2023-10-05T10:14:15.922Z",
     "categoryId": 6
 }
 

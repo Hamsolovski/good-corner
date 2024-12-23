@@ -1,46 +1,45 @@
-export type TagProps = {
-    id: number;
-    name: string;
-  };
-
-import { FormEvent, useEffect, useRef, useState } from "react";
-import { CategoriesProps } from "../../components/Header/Header";
-import axios from "axios";
+import { FormEvent, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { AdInput, useBrowseCategoriesQuery, useCreateAdMutation } from "../../__generated__/types";
 
 export default function AdForm() {
-  const handleSubmit = (e: FormEvent) => {
+
+  const categories = useBrowseCategoriesQuery()
+  const [createAd, {error, loading}] = useCreateAdMutation()
+
+  const navigate = useNavigate()
+
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     const form = e.target;
     const formData = new FormData(form as HTMLFormElement);
     const formJson = Object.fromEntries(formData.entries());
-    formJson.tags = JSON.stringify(tags);
-
-    console.log(formJson);
-    axios.post("http://localhost:3000/ads", formJson);
+    const submission = {
+      title: formJson.title,
+      description: formJson.description,
+      price: parseInt(formJson.price as string),
+      details: formJson.details,
+      category: formJson.category,
+      owner: formJson.owner,
+      tags: tags,
+      location: formJson.location,
+    }
+    createAd({ variables: {data: submission as AdInput}});
+    navigate('/')
   };
-
-  const [categories, setCategories] = useState<CategoriesProps[]>([]);
-  const fetchCategories = async () => {
-    const { data } = await axios.get<CategoriesProps[]>(
-      "http://localhost:3000/categories"
-    );
-    setCategories(data);
-  };
-
-  useEffect(() => {
-    fetchCategories();
-  }, []);
 
   const [tags, setTags] = useState<string[]>([]);
   const tag = useRef<HTMLInputElement | null>(null);
 
   const handleTag = () => {
-        if (!(tags.includes(tag.current!.value))) {
-            setTags([...tags, tag.current!.value]);
+    if (!tags.includes(tag.current!.value)) {
+      setTags([...tags, tag.current!.value]);
     }
-    
   };
 
+  if (loading) return <p>'Submitting...'</p>;
+  if (error) return <p>`Submission error!' ${error.message}`</p>
+  
   return (
     <form onSubmit={handleSubmit} className="ad-post-form">
       <label>
@@ -74,12 +73,12 @@ export default function AdForm() {
       </label>
       <div className="tag-list">
         {tags.map((tag) => (
-          <div>{tag}</div>
+          <div className="tag">{tag}</div>
         ))}
       </div>
 
-      <select name="categoryId" className="text-field">
-        {categories.map((cat) => (
+      <select name="category" className="text-field">
+        {!categories.loading && categories.data!.browseCategories.map((cat) => (
           <option value={cat.id} key={cat.id}>
             {cat.name}
           </option>

@@ -1,31 +1,27 @@
-import express from "express";
 import "reflect-metadata";
 import { dataSource } from "./config/db";
-import { Ad } from "../entities/Ad";
-import { Category } from "../entities/Category";
-import { Tag } from "../entities/Tag";
-import cors from "cors";
-import adsRouter from "../routes/ad";
-import tagsRouter from "../routes/tag";
-import categoriesRouter from "../routes/category";
+import { buildSchema } from "type-graphql";
+import { ApolloServer } from "@apollo/server";
+import { startStandaloneServer } from "@apollo/server/standalone";
+import { AdResolver } from "./resolvers/AdResolver";
+import { TagResolver } from "./resolvers/TagResolver";
+import { CategoryResolver } from "./resolvers/CategoryResolver";
 
-
-// APP INITIALISATION
-const app = express();
 const port = 3000;
-app.use(cors());
-app.use(express.json());
 
-app.get("/", (req, res) => {
-  res.send("Hello World");
-});
+const start = async () => {
+	await dataSource.initialize();
 
-app.use('/ads', adsRouter)
-app.use('/tags', tagsRouter)
-app.use('/categories', categoriesRouter)
+	const schema = await buildSchema({
+		resolvers: [AdResolver, TagResolver, CategoryResolver],
+	});
 
+	const apiServer = new ApolloServer({ schema });
 
-app.listen(port, async () => {
-  await dataSource.initialize();
-  console.log(`The Good Corner listening on port ${port}`);
-});
+	const { url } = await startStandaloneServer(apiServer, {
+		listen: { port: port },
+	});
+	console.log("Hey, ça marche ! =D");
+	console.log(url);
+};
+start();
