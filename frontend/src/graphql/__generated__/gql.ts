@@ -20,6 +20,7 @@ const documents = {
     "\n  mutation createAd($data: AdInput!) {\n    createAd(data: $data) {\n      id\n    }\n  }\n": types.CreateAdDocument,
     "\n  mutation replaceAdById($data: AdInput!, $id: String!) {\n    replaceAdById(data: $data, id: $id) {\n      id\n    }\n  }\n": types.ReplaceAdByIdDocument,
     "\n  query GetAdsByCategory($id: String!) {\n    getAdsByCategory(id: $id) {\n      id\n      title\n      description\n      owner\n      price\n      picture\n      location\n      createdAt\n      tags {\n        name\n        id\n      }\n    }\n  }\n": types.GetAdsByCategoryDocument,
+    "\n    mutation Login($data: UserInput!) {\n        login(data: $data)\n    }\n": types.LoginDocument,
     "\n    query BrowseCategories {\n    browseCategories {\n      id\n      name\n    }\n  }\n": types.BrowseCategoriesDocument,
     "\n    query BrowseTags {\n    browseTags {\n      ads {\n        createdAt\n        description\n        id\n        location\n        owner\n        picture\n        price\n        title\n      }\n      name\n      id\n    }\n    }\n": types.BrowseTagsDocument,
 };
@@ -62,6 +63,10 @@ export function gql(source: "\n  mutation replaceAdById($data: AdInput!, $id: St
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  query GetAdsByCategory($id: String!) {\n    getAdsByCategory(id: $id) {\n      id\n      title\n      description\n      owner\n      price\n      picture\n      location\n      createdAt\n      tags {\n        name\n        id\n      }\n    }\n  }\n"): (typeof documents)["\n  query GetAdsByCategory($id: String!) {\n    getAdsByCategory(id: $id) {\n      id\n      title\n      description\n      owner\n      price\n      picture\n      location\n      createdAt\n      tags {\n        name\n        id\n      }\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n    mutation Login($data: UserInput!) {\n        login(data: $data)\n    }\n"): (typeof documents)["\n    mutation Login($data: UserInput!) {\n        login(data: $data)\n    }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

@@ -3,13 +3,13 @@ FROM node:lts-alpine
 WORKDIR /app
 COPY package*.json ./
 RUN npm i
-COPY src/ src/
-COPY public/ public/
 COPY index.html ./
-COPY tsconfig.app.json ./
-COPY tsconfig.json ./
-COPY tsconfig.node.json ./
+COPY tsconfig*.json ./
 COPY vite.config.ts ./
 COPY codegen.ts ./
+COPY public/ public/
+COPY src/ src/
+
+
 
 CMD npm run dev

@@ -54,7 +54,9 @@ export type Mutation = {
   __typename?: 'Mutation';
   createAd: Ad;
   deleteAdById: Scalars['Boolean']['output'];
+  login: Scalars['String']['output'];
   replaceAdById: Ad;
+  signup: Scalars['String']['output'];
 };
 
 
@@ -68,9 +70,25 @@ export type MutationDeleteAdByIdArgs = {
 };
 
 
+export type MutationLoginArgs = {
+  data: UserInput;
+};
+
+
 export type MutationReplaceAdByIdArgs = {
   data: AdInput;
   id: Scalars['String']['input'];
+};
+
+
+export type MutationSignupArgs = {
+  data: NewUserInput;
+};
+
+export type NewUserInput = {
+  email: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+  password: Scalars['String']['input'];
 };
 
 export type Query = {
@@ -80,6 +98,9 @@ export type Query = {
   browseTags: Array<Tag>;
   getAdById: Ad;
   getAdsByCategory: Array<Ad>;
+  getUserAsUser: Array<User>;
+  getUsers: Array<User>;
+  getUsersAsAdmin: Array<User>;
 };
 
 
@@ -97,6 +118,20 @@ export type Tag = {
   ads: Array<Ad>;
   id: Scalars['Float']['output'];
   name: Scalars['String']['output'];
+};
+
+export type User = {
+  __typename?: 'User';
+  email: Scalars['String']['output'];
+  hashedPassword: Scalars['String']['output'];
+  id: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+  roles: Scalars['String']['output'];
+};
+
+export type UserInput = {
+  email: Scalars['String']['input'];
+  password: Scalars['String']['input'];
 };
 
 export type BrowseAdsQueryVariables = Exact<{ [key: string]: never; }>;
@@ -139,6 +174,13 @@ export type GetAdsByCategoryQueryVariables = Exact<{
 
 
 export type GetAdsByCategoryQuery = { __typename?: 'Query', getAdsByCategory: Array<{ __typename?: 'Ad', id: string, title: string, description: string, owner: string, price: number, picture: string, location: string, createdAt: any, tags: Array<{ __typename?: 'Tag', name: string, id: number }> }> };
+
+export type LoginMutationVariables = Exact<{
+  data: UserInput;
+}>;
+
+
+export type LoginMutation = { __typename?: 'Mutation', login: string };
 
 export type BrowseCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -409,6 +451,37 @@ export type GetAdsByCategoryQueryHookResult = ReturnType<typeof useGetAdsByCateg
 export type GetAdsByCategoryLazyQueryHookResult = ReturnType<typeof useGetAdsByCategoryLazyQuery>;
 export type GetAdsByCategorySuspenseQueryHookResult = ReturnType<typeof useGetAdsByCategorySuspenseQuery>;
 export type GetAdsByCategoryQueryResult = Apollo.QueryResult<GetAdsByCategoryQuery, GetAdsByCategoryQueryVariables>;
+export const LoginDocument = gql`
+    mutation Login($data: UserInput!) {
+  login(data: $data)
+}
+    `;
+export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutationVariables>;
+
+/**
+ * __useLoginMutation__
+ *
+ * To run a mutation, you first call `useLoginMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLoginMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [loginMutation, { data, loading, error }] = useLoginMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginMutation, LoginMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument, options);
+      }
+export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
+export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
+export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
 export const BrowseCategoriesDocument = gql`
     query BrowseCategories {
   browseCategories {

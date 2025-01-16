@@ -5,7 +5,7 @@ import './index.css'
 import { BrowserRouter } from 'react-router-dom'
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client'
 
-const uri = 'http://localhost:3000/'
+const uri = `http://localhost:${import.meta.env.VITE_GATEWAY_PORT}/api`
 
 const client = new ApolloClient({
   uri: uri,

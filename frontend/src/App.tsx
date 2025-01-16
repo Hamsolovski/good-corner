@@ -6,6 +6,7 @@ import About from "./pages/About/About";
 import AdDetails from "./pages/AdDetails/AdDetails";
 import AdForm from "./pages/AdForm/AdForm";
 import UpdateAdForm from "./pages/UpdateAdForm/UpdateAdForm";
+import TestPage from "./pages/Test";
 
 
 
@@ -19,6 +20,7 @@ function App() {
         <Route path="/ad/:id" element={<AdDetails />} />
         <Route path="/ad/new" element={<AdForm />} />
         <Route path="/ad/:id/update" element={<UpdateAdForm />} />
+        <Route path="/test" element={<TestPage />} />
       </Route>
     </Routes>
   );

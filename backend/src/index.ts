@@ -6,22 +6,47 @@ import { startStandaloneServer } from "@apollo/server/standalone";
 import { AdResolver } from "./resolvers/AdResolver";
 import { TagResolver } from "./resolvers/TagResolver";
 import { CategoryResolver } from "./resolvers/CategoryResolver";
+import { UserResolver } from "./resolvers/UserResolver";
+import * as jwt from "jsonwebtoken";
+import { config } from "dotenv"
 
-const port = 3000;
+config()
+const port = Number(process.env.BACKEND_PORT);
+if (!port) throw new Error("Missing env variable: BACKEND_PORT")
 
 const start = async () => {
 	await dataSource.initialize();
 
 	const schema = await buildSchema({
-		resolvers: [AdResolver, TagResolver, CategoryResolver],
+		resolvers: [AdResolver, TagResolver, CategoryResolver, UserResolver],
+		authChecker: ({ context }, neededRoles) => {
+			const rights: string[] = context.user?.roles.split("");
+			if (!rights.length) return false;
+			if (rights.includes("GOD")) return true;
+
+			return neededRoles.some((roleCandidate) => 
+				rights.includes(roleCandidate)
+		)}
 	});
 
 	const apiServer = new ApolloServer({ schema });
 
-	const { url } = await startStandaloneServer(apiServer, {
-		listen: { port: port },
+	await startStandaloneServer(apiServer, {
+		listen: { port },
+		context: async ({ req, res }) => {
+			if (!process.env.JWT_SECRET) return { res };
+			const token = req.headers.cookie?.split("token=")[1];
+
+			if (!token) return { res };
+
+			const tokenContent = jwt.verify(token, process.env.JWT_SECRET);
+
+			return {
+				res,
+				user: tokenContent,
+			}
+		}
 	});
-	console.log("Hey, ça marche ! =D");
-	console.log(url);
+	console.log("Backend started on port " + port);
 };
 start();

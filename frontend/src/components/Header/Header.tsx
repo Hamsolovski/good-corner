@@ -28,7 +28,6 @@ export default function Header() {
   // }, []);
 
   const { loading, data } = useQuery(GET_ALL_CATEGORIES);
-  console.log("categories", data);
 
   return (
     <header className="header">
@@ -74,7 +73,7 @@ export default function Header() {
               {id > 0 && "•"}
               <Link
                 to={`/?category=${category.id}`}
-                key={category.name}
+                key={"header-cat"+category.id+category.name}
                 className="category-navigation-link"
               >
                 {category.name}
